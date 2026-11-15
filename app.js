@@ -12,7 +12,7 @@ function normalize(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCa
 function setFeedback(msg,ok=false){$('feedback').textContent=msg;$('feedback').className='feedback'+(ok?' success':'')}
 function updateOnline(){const on=navigator.onLine;$('connection').classList.toggle('offline',!on);$('connection').innerHTML='<i></i> '+(on?'En ligne':'Hors connexion')}
 function initMap(){map=L.map('map',{zoomControl:true,scrollWheelZoom:true,worldCopyJump:true}).setView([22,4],2);map.attributionControl.setPrefix('');map.createPane('countries');map.getPane('countries').style.zIndex=410;}
-function styleFeature(f){return {color:'#ffffff',weight:1.05,opacity:.96,fillColor:visited.has(countryCode(f))?'#4b9878':'#f7f8f4',fillOpacity:visited.has(countryCode(f))?.98:1}}
+function styleFeature(f){const done=visited.has(countryCode(f));return {color:done?'#ffffff':'#8295a3',weight:done?1.15:0.85,opacity:1,fillColor:done?'#16845b':'#e5edf2',fillOpacity:done?1:1}}
 function renderMap(){if(!geoLayer)return;geoLayer.setStyle(styleFeature)}
 function renderList(){const list=$('visitedList');const items=countries.filter(f=>visited.has(countryCode(f))).sort((a,b)=>countryName(a).localeCompare(countryName(b),'fr'));$('visitedCount').textContent=items.length;$('worldPercent').textContent=(items.length/Math.max(1,countries.length)*100).toFixed(1).replace('.',',')+' %';if(!items.length){list.innerHTML='<div class="empty-state">Ta carte est encore vierge.<br>Ajoute ton premier pays !</div>';return}list.innerHTML='';items.forEach(f=>{const row=document.createElement('div');row.className='country-row';const dot=document.createElement('i');dot.className='country-dot';const name=document.createElement('span');name.textContent=countryName(f);const btn=document.createElement('button');btn.type='button';btn.textContent='×';btn.title='Retirer '+countryName(f);btn.setAttribute('aria-label',btn.title);btn.onclick=()=>removeCountry(countryCode(f));row.append(dot,name,btn);list.append(row)})}
 async function save(){await dbSet('visited',[...visited]);$('saveStatus').textContent='Sauvegardé sur cet appareil · '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}
@@ -29,7 +29,7 @@ function findCountryFromAddress(addr){
  return null;
 }
 async function loadGeo(){
- const cached=await dbGet('geojson-v7');if(cached)return cached;
+ const cached=await dbGet('geojson-v8');if(cached)return cached;
  // Base Natural Earth : les unités administratives contiguës d'un même État
  // sont regroupées. Seuls les territoires éloignés explicitement listés restent séparés.
  const url='https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_map_subunits.geojson';
@@ -63,7 +63,7 @@ async function loadGeo(){
   p._myworldLabel=label;p._myworldCode=code;p.name=label;
   return f;
  });
- await dbSet('geojson-v7',data);return data;
+ await dbSet('geojson-v8',data);return data;
 }
 async function loadMap(){try{if(!window.L)throw new Error('La bibliothèque cartographique n’est pas chargée. Ouvre MyWorld une première fois avec Internet.');const data=await loadGeo();countries=data.features;geoLayer=L.geoJSON(data,{pane:'countries',style:styleFeature,onEachFeature:(f,l)=>{l.on('click',()=>{const n=countryName(f);if(visited.has(countryCode(f)))setFeedback(n+' fait déjà partie de tes pays visités.',true);else addCountry(f,'map')});l.bindTooltip(countryName(f),{sticky:true})}}).addTo(map);map.fitBounds(geoLayer.getBounds(),{padding:[12,12]});$('mapLoading').classList.add('hidden');$('mapStatus').textContent=countries.length+' pays et territoires';renderMap();renderList()}catch(e){$('mapLoading').innerHTML='<p>'+e.message+'</p><p>Connecte-toi une première fois pour télécharger la carte.</p>';$('mapStatus').textContent='Carte non chargée';console.error(e)}}
 async function searchPlace(q){const direct=findCountry(q);if(direct){await addCountry(direct,'country');return}const cached=placeCache[normalize(q)];if(cached){const f=countries.find(x=>countryCode(x)===cached.code);if(f){await addCountry(f,'cache');return}}

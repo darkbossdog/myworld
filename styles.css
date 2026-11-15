@@ -49,3 +49,14 @@ footer{padding-top:18px}
 @media(max-width:1050px){.workspace{grid-template-columns:minmax(0,1fr) 300px;gap:14px}.layout{padding-left:22px;padding-right:22px}#map{height:520px}}
 @media(max-width:780px){.topbar{height:64px;padding:0 16px}.layout{padding:25px 13px 18px}.intro{display:block;margin-bottom:20px}.intro h1{font-size:39px}.stats{margin-top:20px;gap:24px}.stat strong{font-size:30px}.workspace{grid-template-columns:1fr;gap:13px}.map-panel,.side-panel{border-radius:14px}#map{height:440px;min-height:340px}.map-heading{padding:15px 17px}.map-foot{padding:10px 14px;flex-wrap:wrap}.add-block,.visited-block{padding:19px}.visited-list{max-height:220px}footer{font-size:8px;gap:10px;flex-wrap:wrap}}
 @media(max-width:420px){.intro h1{font-size:34px}.stats{gap:18px}.stat span{font-size:8px}.map-legend{gap:9px;font-size:9px}#map{height:390px}}
+
+
+/* MYWORLD V8 — contraste cartographique renforcé */
+#map{background-color:#d7e4ec!important;background-image:radial-gradient(ellipse at 50% 42%,rgba(255,255,255,.24),rgba(188,211,224,.18) 72%),linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px)!important}
+.leaflet-container{background:#d7e4ec!important}
+.leaflet-overlay-pane path{transition:fill .18s ease,fill-opacity .18s ease,stroke .18s ease}
+.leaflet-tooltip{background:#fff!important;border:1px solid #9aabb6!important;color:#142f43!important;font-size:12px!important;font-weight:700!important}
+.map-legend span:first-child i{background:#16845b!important;box-shadow:0 0 0 2px #d5e9df}
+.map-legend span:last-child b{background:#e5edf2!important;border:1px solid #8295a3!important}
+.map-foot{color:#526979!important}
+@media (prefers-reduced-motion:reduce){.leaflet-overlay-pane path{transition:none}}
