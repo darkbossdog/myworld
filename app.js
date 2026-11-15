@@ -2,7 +2,7 @@
 const DB_NAME='myworld-db', DB_VERSION=1, STORE='data';
 let map, geoLayer, countries=[], visited=new Set(), placeCache={}, db;
 const $=id=>document.getElementById(id);
-const aliases={'France':'France métropolitaine','La Reunion':'La Réunion','Reunion':'La Réunion','Réunion':'La Réunion','Guyane française':'Guyane','French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Mayotte':'Mayotte','France métropolitaine':'France métropolitaine','États-Unis':'United States of America','Hawaii':'Hawaï','Hawaï':'Hawaï','Alaska':'Alaska','Puerto Rico':'Porto Rico','Porto Rico':'Porto Rico','Greenland':'Groenland','Groenland':'Groenland','Etats-Unis':'United States of America','United States':'United States of America','United States of America':'United States of America','USA':'United States of America','U.S.A.':'United States of America','Royaume-Uni':'United Kingdom','Corée du Sud':'South Korea','Corée du Nord':'North Korea','Russie':'Russia','Tchéquie':'Czechia','Côte d’Ivoire':"Côte d'Ivoire",'Vietnam':'Vietnam','Laos':'Laos','Syrie':'Syria','Birmanie':'Myanmar','Taïwan':'Taiwan','Bolivie':'Bolivia','Tanzanie':'Tanzania','Venezuela':'Venezuela','Moldavie':'Moldova','Cap-Vert':'Cape Verde','Émirats arabes unis':'United Arab Emirates','République dominicaine':'Dominican Republic','Nouvelle-Zélande':'New Zealand','Pays-Bas':'Netherlands','Allemagne':'Germany','Espagne':'Spain','Italie':'Italy','Grèce':'Greece','France':'France','Canada':'Canada','Japon':'Japan','Australie':'Australia','Brésil':'Brazil','Mexique':'Mexico','Maroc':'Morocco','Portugal':'Portugal','Suisse':'Switzerland','Belgique':'Belgium','Irlande':'Ireland','Islande':'Iceland','Norvège':'Norway','Suède':'Sweden','Finlande':'Finland','Danemark':'Denmark','Pologne':'Poland','Ukraine':'Ukraine','Turquie':'Turkey','Égypte':'Egypt','Afrique du Sud':'South Africa','Inde':'India','Chine':'China','Thaïlande':'Thailand','Indonésie':'Indonesia','Argentine':'Argentina','Chili':'Chile','Pérou':'Peru','Colombie':'Colombia','Cuba':'Cuba','Madagascar':'Madagascar','Sénégal':'Senegal','Kenya':'Kenya','Népal':'Nepal','Singapour':'Singapore'};
+const aliases={'France':'France métropolitaine','La Reunion':'La Réunion','Reunion':'La Réunion','Réunion':'La Réunion','Guyane française':'Guyane','French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Mayotte':'Mayotte','France métropolitaine':'France métropolitaine','États-Unis':'United States of America','Hawaii':'Hawaï','Hawaï':'Hawaï','Alaska':'Alaska','Puerto Rico':'Porto Rico','Porto Rico':'Porto Rico','Greenland':'Groenland','Groenland':'Groenland','Etats-Unis':'United States of America','United States':'United States of America','United States of America':'United States of America','USA':'United States of America','U.S.A.':'United States of America','Royaume-Uni':'United Kingdom','Angleterre':'England','England':'England','Écosse':'Scotland','Scotland':'Scotland','Pays de Galles':'Wales','Wales':'Wales','Irlande du Nord':'Northern Ireland','Northern Ireland':'Northern Ireland','Socotra':'Socotra','Socotra Island':'Socotra','Île de Socotra':'Socotra','Canary Islands':'Îles Canaries','Îles Canaries':'Îles Canaries','Balearic Islands':'Îles Baléares','Îles Baléares':'Îles Baléares','Azores':'Açores','Açores':'Açores','Madeira':'Madère','Madère':'Madère','Svalbard':'Svalbard','Jan Mayen':'Jan Mayen','Tasmania':'Tasmanie','Tasmanie':'Tasmanie','Corée du Sud':'South Korea','Corée du Nord':'North Korea','Russie':'Russia','Tchéquie':'Czechia','Côte d’Ivoire':"Côte d'Ivoire",'Vietnam':'Vietnam','Laos':'Laos','Syrie':'Syria','Birmanie':'Myanmar','Taïwan':'Taiwan','Bolivie':'Bolivia','Tanzanie':'Tanzania','Venezuela':'Venezuela','Moldavie':'Moldova','Cap-Vert':'Cape Verde','Émirats arabes unis':'United Arab Emirates','République dominicaine':'Dominican Republic','Nouvelle-Zélande':'New Zealand','Pays-Bas':'Netherlands','Allemagne':'Germany','Espagne':'Spain','Italie':'Italy','Grèce':'Greece','France':'France','Canada':'Canada','Japon':'Japan','Australie':'Australia','Brésil':'Brazil','Mexique':'Mexico','Maroc':'Morocco','Portugal':'Portugal','Suisse':'Switzerland','Belgique':'Belgium','Irlande':'Ireland','Islande':'Iceland','Norvège':'Norway','Suède':'Sweden','Finlande':'Finland','Danemark':'Denmark','Pologne':'Poland','Ukraine':'Ukraine','Turquie':'Turkey','Égypte':'Egypt','Afrique du Sud':'South Africa','Inde':'India','Chine':'China','Thaïlande':'Thailand','Indonésie':'Indonesia','Argentine':'Argentina','Chili':'Chile','Pérou':'Peru','Colombie':'Colombia','Cuba':'Cuba','Madagascar':'Madagascar','Sénégal':'Senegal','Kenya':'Kenya','Népal':'Nepal','Singapour':'Singapore'};
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>r.result.createObjectStore(STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function dbGet(key){return new Promise(resolve=>{const t=db.transaction(STORE,'readonly').objectStore(STORE).get(key);t.onsuccess=()=>resolve(t.result);t.onerror=()=>resolve(null)})}
 function dbSet(key,value){return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(value,key);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
@@ -20,7 +20,7 @@ async function addCountry(feature,source){const code=countryCode(feature);if(vis
 async function removeCountry(code){visited.delete(code);await save();renderMap();renderList();setFeedback('Pays retiré de ta carte.',true)}
 function findCountry(query){const q=normalize(query);const direct=aliases[query]||query;let f=countries.find(x=>normalize(countryName(x))===normalize(direct));if(f)return f;return countries.find(x=>normalize(countryName(x)).includes(q))||null}
 function findCountryFromAddress(addr){
- const specific=[addr.state,addr.region,addr.province,addr.county,addr.island,addr.state_district].filter(Boolean);
+ const specific=[addr.island,addr.state,addr.region,addr.province,addr.county,addr.state_district].filter(Boolean);
  for(const name of specific){const f=findCountry(name);if(f)return f;}
  const name=addr.country||'';
  const direct=findCountry(name)||findCountry(aliases[name]||name);if(direct)return direct;
@@ -29,7 +29,7 @@ function findCountryFromAddress(addr){
  return null;
 }
 async function loadGeo(){
- const cached=await dbGet('geojson-v5');if(cached)return cached;
+ const cached=await dbGet('geojson-v7');if(cached)return cached;
  // Base Natural Earth : les unités administratives contiguës d'un même État
  // sont regroupées. Seuls les territoires éloignés explicitement listés restent séparés.
  const url='https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_map_subunits.geojson';
@@ -42,7 +42,12 @@ async function loadGeo(){
   'United States Virgin Islands':'Îles Vierges américaines','Northern Mariana Islands':'Îles Mariannes du Nord',
   'Greenland':'Groenland','Faroe Islands':'Îles Féroé','Aland':'Îles Åland','Åland':'Îles Åland',
   'Aruba':'Aruba','Curacao':'Curaçao','Curaçao':'Curaçao','Bonaire, Sint Eustatius and Saba':'Caraïbes néerlandaises',
-  'Bermuda':'Bermudes','Cayman Islands':'Îles Caïmans','Gibraltar':'Gibraltar','Falkland Islands':'Îles Malouines'
+  'Bermuda':'Bermudes','Cayman Islands':'Îles Caïmans','Gibraltar':'Gibraltar','Falkland Islands':'Îles Malouines',
+  // Nations constitutives du Royaume-Uni : unités distinctes dans Natural Earth.
+  'England':'Angleterre','Scotland':'Écosse','Wales':'Pays de Galles','Northern Ireland':'Irlande du Nord',
+  // Îles et archipels éloignés explicitement suivis séparément.
+  'Socotra':'Socotra','Socotra Island':'Socotra','Canary Islands':'Îles Canaries','Balearic Islands':'Îles Baléares',
+  'Azores':'Açores','Madeira':'Madère','Svalbard':'Svalbard','Jan Mayen':'Jan Mayen','Tasmania':'Tasmanie'
  };
  const sovereignLabels={
   'Belgium':'Belgique','France':'France métropolitaine','United States of America':'États-Unis','Denmark':'Danemark',
@@ -58,7 +63,7 @@ async function loadGeo(){
   p._myworldLabel=label;p._myworldCode=code;p.name=label;
   return f;
  });
- await dbSet('geojson-v5',data);return data;
+ await dbSet('geojson-v7',data);return data;
 }
 async function loadMap(){try{if(!window.L)throw new Error('La bibliothèque cartographique n’est pas chargée. Ouvre MyWorld une première fois avec Internet.');const data=await loadGeo();countries=data.features;geoLayer=L.geoJSON(data,{pane:'countries',style:styleFeature,onEachFeature:(f,l)=>{l.on('click',()=>{const n=countryName(f);if(visited.has(countryCode(f)))setFeedback(n+' fait déjà partie de tes pays visités.',true);else addCountry(f,'map')});l.bindTooltip(countryName(f),{sticky:true})}}).addTo(map);map.fitBounds(geoLayer.getBounds(),{padding:[12,12]});$('mapLoading').classList.add('hidden');$('mapStatus').textContent=countries.length+' pays et territoires';renderMap();renderList()}catch(e){$('mapLoading').innerHTML='<p>'+e.message+'</p><p>Connecte-toi une première fois pour télécharger la carte.</p>';$('mapStatus').textContent='Carte non chargée';console.error(e)}}
 async function searchPlace(q){const direct=findCountry(q);if(direct){await addCountry(direct,'country');return}const cached=placeCache[normalize(q)];if(cached){const f=countries.find(x=>countryCode(x)===cached.code);if(f){await addCountry(f,'cache');return}}

@@ -46,3 +46,10 @@ VERSION 4 — La carte utilise les sous-unités Natural Earth pour distinguer ce
 VERSION 5 — REGROUPEMENT DES RÉGIONS CONTIGUËS
 Les subdivisions administratives contiguës d’un même État sont regroupées sous un seul pays (ex. Belgique). Les territoires éloignés explicitement pris en charge (ex. Martinique, Guadeloupe, Alaska, Hawaï, Groenland) restent indépendants.
 Avant la mise à jour, exporter une sauvegarde depuis l’ancienne version. Les codes géographiques changent dans cette version ; réimporter la sauvegarde ne garantit pas la reprise automatique des anciennes sélections.
+
+
+VERSION 7 — TERRITOIRES VISITABLES
+- Les quatre nations constitutives du Royaume-Uni sont distinguées lorsqu'elles sont présentes dans les sous-unités Natural Earth : Angleterre, Écosse, pays de Galles et Irlande du Nord.
+- Ajout de correspondances pour des territoires insulaires/éloignés connus (Socotra, Canaries, Baléares, Açores, Madère, Svalbard, Jan Mayen, Tasmanie), sous réserve de leur présence et de leur nom dans la source cartographique.
+- Le cache cartographique est versionné en v7 pour forcer le rechargement des nouvelles géométries.
+IMPORTANT : exporter une sauvegarde avant mise à jour. Les territoires nouvellement individualisés ont de nouveaux identifiants ; une ancienne sélection du Royaume-Uni ne peut pas être automatiquement répartie entre ses nations constitutives.
