@@ -53,3 +53,6 @@ VERSION 7 — TERRITOIRES VISITABLES
 - Ajout de correspondances pour des territoires insulaires/éloignés connus (Socotra, Canaries, Baléares, Açores, Madère, Svalbard, Jan Mayen, Tasmanie), sous réserve de leur présence et de leur nom dans la source cartographique.
 - Le cache cartographique est versionné en v7 pour forcer le rechargement des nouvelles géométries.
 IMPORTANT : exporter une sauvegarde avant mise à jour. Les territoires nouvellement individualisés ont de nouveaux identifiants ; une ancienne sélection du Royaume-Uni ne peut pas être automatiquement répartie entre ses nations constitutives.
+
+
+V10 : correction du découpage du Yémen/Socotra à partir des coordonnées des polygones de la source Natural Earth ; le compteur et la liste dédoublonnent les identifiants de territoires. La carte utilise toujours Natural Earth 1:50m.
