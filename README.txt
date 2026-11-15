@@ -30,7 +30,7 @@ Les pays visités sont stockés localement sur chaque appareil (IndexedDB). Il n
 
 LIMITES DE CETTE PREMIÈRE VERSION
 - La recherche d'un pays fonctionne hors connexion. La recherche de villes et régions s'appuie sur Nominatim lors de la première recherche ; les résultats choisis sont ensuite mémorisés localement. Un lieu jamais recherché ne peut pas être identifié hors connexion dans cette version.
-- Les frontières des pays sont issues du jeu GeoJSON « datasets/geo-countries », dérivé de Natural Earth (licence PDDL / données Natural Earth dans le domaine public).
+- Les frontières des pays sont issues de datasets/geo-countries et Natural Earth. France métropolitaine et les cinq DROM sont individualisés à partir des unités géographiques Natural Earth.
 - La bibliothèque Leaflet et la police sont chargées depuis Internet au premier lancement ; prévoir une première ouverture en ligne.
 - Pour l'installation PWA réelle, il faudra publier ce dossier sur une adresse HTTPS.
 
