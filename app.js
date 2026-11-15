@@ -2,12 +2,12 @@
 const DB_NAME='myworld-db', DB_VERSION=1, STORE='data';
 let map, geoLayer, countries=[], visited=new Set(), placeCache={}, db;
 const $=id=>document.getElementById(id);
-const aliases={'France':'France métropolitaine','La Reunion':'La Réunion','Reunion':'La Réunion','Réunion':'La Réunion','Guyane française':'Guyane','French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Mayotte':'Mayotte','France métropolitaine':'France métropolitaine','États-Unis':'United States of America','Etats-Unis':'United States of America','United States':'United States of America','United States of America':'United States of America','USA':'United States of America','U.S.A.':'United States of America','Royaume-Uni':'United Kingdom','Corée du Sud':'South Korea','Corée du Nord':'North Korea','Russie':'Russia','Tchéquie':'Czechia','Côte d’Ivoire':"Côte d'Ivoire",'Vietnam':'Vietnam','Laos':'Laos','Syrie':'Syria','Birmanie':'Myanmar','Taïwan':'Taiwan','Bolivie':'Bolivia','Tanzanie':'Tanzania','Venezuela':'Venezuela','Moldavie':'Moldova','Cap-Vert':'Cape Verde','Émirats arabes unis':'United Arab Emirates','République dominicaine':'Dominican Republic','Nouvelle-Zélande':'New Zealand','Pays-Bas':'Netherlands','Allemagne':'Germany','Espagne':'Spain','Italie':'Italy','Grèce':'Greece','France':'France','Canada':'Canada','Japon':'Japan','Australie':'Australia','Brésil':'Brazil','Mexique':'Mexico','Maroc':'Morocco','Portugal':'Portugal','Suisse':'Switzerland','Belgique':'Belgium','Irlande':'Ireland','Islande':'Iceland','Norvège':'Norway','Suède':'Sweden','Finlande':'Finland','Danemark':'Denmark','Pologne':'Poland','Ukraine':'Ukraine','Turquie':'Turkey','Égypte':'Egypt','Afrique du Sud':'South Africa','Inde':'India','Chine':'China','Thaïlande':'Thailand','Indonésie':'Indonesia','Argentine':'Argentina','Chili':'Chile','Pérou':'Peru','Colombie':'Colombia','Cuba':'Cuba','Madagascar':'Madagascar','Sénégal':'Senegal','Kenya':'Kenya','Népal':'Nepal','Singapour':'Singapore'};
+const aliases={'France':'France métropolitaine','La Reunion':'La Réunion','Reunion':'La Réunion','Réunion':'La Réunion','Guyane française':'Guyane','French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Mayotte':'Mayotte','France métropolitaine':'France métropolitaine','États-Unis':'United States of America','Hawaii':'Hawaï','Hawaï':'Hawaï','Alaska':'Alaska','Puerto Rico':'Porto Rico','Porto Rico':'Porto Rico','Greenland':'Groenland','Groenland':'Groenland','Etats-Unis':'United States of America','United States':'United States of America','United States of America':'United States of America','USA':'United States of America','U.S.A.':'United States of America','Royaume-Uni':'United Kingdom','Corée du Sud':'South Korea','Corée du Nord':'North Korea','Russie':'Russia','Tchéquie':'Czechia','Côte d’Ivoire':"Côte d'Ivoire",'Vietnam':'Vietnam','Laos':'Laos','Syrie':'Syria','Birmanie':'Myanmar','Taïwan':'Taiwan','Bolivie':'Bolivia','Tanzanie':'Tanzania','Venezuela':'Venezuela','Moldavie':'Moldova','Cap-Vert':'Cape Verde','Émirats arabes unis':'United Arab Emirates','République dominicaine':'Dominican Republic','Nouvelle-Zélande':'New Zealand','Pays-Bas':'Netherlands','Allemagne':'Germany','Espagne':'Spain','Italie':'Italy','Grèce':'Greece','France':'France','Canada':'Canada','Japon':'Japan','Australie':'Australia','Brésil':'Brazil','Mexique':'Mexico','Maroc':'Morocco','Portugal':'Portugal','Suisse':'Switzerland','Belgique':'Belgium','Irlande':'Ireland','Islande':'Iceland','Norvège':'Norway','Suède':'Sweden','Finlande':'Finland','Danemark':'Denmark','Pologne':'Poland','Ukraine':'Ukraine','Turquie':'Turkey','Égypte':'Egypt','Afrique du Sud':'South Africa','Inde':'India','Chine':'China','Thaïlande':'Thailand','Indonésie':'Indonesia','Argentine':'Argentina','Chili':'Chile','Pérou':'Peru','Colombie':'Colombia','Cuba':'Cuba','Madagascar':'Madagascar','Sénégal':'Senegal','Kenya':'Kenya','Népal':'Nepal','Singapour':'Singapore'};
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>r.result.createObjectStore(STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function dbGet(key){return new Promise(resolve=>{const t=db.transaction(STORE,'readonly').objectStore(STORE).get(key);t.onsuccess=()=>resolve(t.result);t.onerror=()=>resolve(null)})}
 function dbSet(key,value){return new Promise((resolve,reject)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(value,key);t.oncomplete=resolve;t.onerror=()=>reject(t.error)})}
-function countryName(f){return f.properties._myworldLabel||f.properties.name||f.properties.ADMIN||f.properties.name_long}
-function countryCode(f){return f.properties._myworldCode||f.properties['ISO3166-1-Alpha-3']||f.properties.ISO_A3||f.properties.ADM0_A3||countryName(f)}
+function countryName(f){return f.properties._myworldLabel||f.properties.SUBUNIT||f.properties.name||f.properties.ADMIN||f.properties.name_long}
+function countryCode(f){return f.properties._myworldCode||f.properties.SU_A3||f.properties.GU_A3||f.properties.ISO_A3||f.properties.ADM0_A3||countryName(f)}
 function normalize(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim()}
 function setFeedback(msg,ok=false){$('feedback').textContent=msg;$('feedback').className='feedback'+(ok?' success':'')}
 function updateOnline(){const on=navigator.onLine;$('connection').classList.toggle('offline',!on);$('connection').innerHTML='<i></i> '+(on?'En ligne':'Hors connexion')}
@@ -20,34 +20,38 @@ async function addCountry(feature,source){const code=countryCode(feature);if(vis
 async function removeCountry(code){visited.delete(code);await save();renderMap();renderList();setFeedback('Pays retiré de ta carte.',true)}
 function findCountry(query){const q=normalize(query);const direct=aliases[query]||query;let f=countries.find(x=>normalize(countryName(x))===normalize(direct));if(f)return f;return countries.find(x=>normalize(countryName(x)).includes(q))||null}
 function findCountryFromAddress(addr){
- const cc=(addr.country_code||'').toUpperCase();
- if(cc){const byCode=countries.find(f=>[f.properties.ISO_A2,f.properties.ISO3166_1_Alpha_2,f.properties['ISO3166-1-Alpha-2'],f.properties.POSTAL].some(v=>v&&String(v).toUpperCase()===cc));if(byCode)return byCode;}
+ const specific=[addr.state,addr.region,addr.province,addr.county,addr.island,addr.state_district].filter(Boolean);
+ for(const name of specific){const f=findCountry(name);if(f)return f;}
  const name=addr.country||'';
- return findCountry(name)||findCountry(aliases[name]||name);
+ const direct=findCountry(name)||findCountry(aliases[name]||name);if(direct)return direct;
+ const cc=(addr.country_code||'').toUpperCase();
+ if(cc){const matches=countries.filter(f=>[f.properties.ISO_A2,f.properties.ISO_A2_EH,f.properties.ISO3166_1_Alpha_2,f.properties['ISO3166-1-Alpha-2'],f.properties.POSTAL].some(v=>v&&String(v).toUpperCase()===cc));if(matches.length===1)return matches[0];}
+ return null;
 }
 async function loadGeo(){
- const cached=await dbGet('geojson-v2');if(cached)return cached;
- const baseUrl='https://raw.githubusercontent.com/datasets/geo-countries/main/data/countries.geojson';
- const unitsUrl='https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_map_units.geojson';
- const [baseResponse,unitsResponse]=await Promise.all([fetch(baseUrl),fetch(unitsUrl)]);
- if(!baseResponse.ok)throw new Error('Données géographiques indisponibles');
- const data=await baseResponse.json();
- if(unitsResponse.ok){
-  const units=await unitsResponse.json();
-  const names={'France':'France métropolitaine','French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Reunion':'La Réunion','Réunion':'La Réunion','Mayotte':'Mayotte'};
-  const wanted=new Set(Object.keys(names));
-  const selected=units.features.filter(f=>wanted.has(f.properties.GEOUNIT)||wanted.has(f.properties.NAME_EN)||wanted.has(f.properties.NAME));
-  const franceIndex=data.features.findIndex(f=>normalize(countryName(f))==='france');
-  if(franceIndex>=0)data.features.splice(franceIndex,1);
-  const codes={'France':'FRA','French Guiana':'FR-GUF','Guadeloupe':'FR-GLP','Martinique':'FR-MTQ','Reunion':'FR-REU','Réunion':'FR-REU','Mayotte':'FR-MYT'};
-  for(const f of selected){
-   const raw=f.properties.GEOUNIT||f.properties.NAME_EN||f.properties.NAME;
-   const label=names[raw];if(!label)continue;
-   f.properties._myworldLabel=label;f.properties._myworldCode=codes[raw];f.properties.name=label;
-   data.features.push(f);
-  }
- }
- await dbSet('geojson-v2',data);return data;
+ const cached=await dbGet('geojson-v4');if(cached)return cached;
+ // Natural Earth map subunits sépare les territoires géographiquement distincts
+ // (ex. Alaska, Hawaï, Groenland, Guadeloupe, Martinique, etc.).
+ const url='https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_map_subunits.geojson';
+ const response=await fetch(url);if(!response.ok)throw new Error('Données géographiques indisponibles');
+ const data=await response.json();
+ const aliasesBySubunit={
+  'France':'France métropolitaine','Mainland France':'France métropolitaine','Metropolitan France':'France métropolitaine',
+  'French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Reunion':'La Réunion','Mayotte':'Mayotte',
+  'Alaska':'Alaska','Hawaii':'Hawaï','Hawaiʻi':'Hawaï','Puerto Rico':'Porto Rico','Guam':'Guam','American Samoa':'Samoa américaines',
+  'United States Virgin Islands':'Îles Vierges américaines','Northern Mariana Islands':'Îles Mariannes du Nord',
+  'Greenland':'Groenland','Faroe Islands':'Îles Féroé','Aland':'Îles Åland','Åland':'Îles Åland',
+  'Aruba':'Aruba','Curacao':'Curaçao','Curaçao':'Curaçao','Bonaire, Sint Eustatius and Saba':'Caraïbes néerlandaises',
+  'Bermuda':'Bermudes','Cayman Islands':'Îles Caïmans','Gibraltar':'Gibraltar','Falkland Islands':'Îles Malouines'
+ };
+ data.features=data.features.filter(f=>f.geometry&&f.properties).map(f=>{
+  const p=f.properties;const raw=p.SUBUNIT||p.NAME_EN||p.NAME||p.ADMIN||'Territoire';
+  const label=aliasesBySubunit[raw]||raw;
+  const code=p.SU_A3&&p.SU_A3!=='-99'?p.SU_A3:(p.GU_A3&&p.GU_A3!=='-99'?p.GU_A3:raw+'-'+(p.SOV_A3||p.SOVEREIGNT||''));
+  p._myworldLabel=label;p._myworldCode=code;p.name=label;
+  return f;
+ });
+ await dbSet('geojson-v4',data);return data;
 }
 async function loadMap(){try{if(!window.L)throw new Error('La bibliothèque cartographique n’est pas chargée. Ouvre MyWorld une première fois avec Internet.');const data=await loadGeo();countries=data.features;geoLayer=L.geoJSON(data,{pane:'countries',style:styleFeature,onEachFeature:(f,l)=>{l.on('click',()=>{const n=countryName(f);if(visited.has(countryCode(f)))setFeedback(n+' fait déjà partie de tes pays visités.',true);else addCountry(f,'map')});l.bindTooltip(countryName(f),{sticky:true})}}).addTo(map);map.fitBounds(geoLayer.getBounds(),{padding:[12,12]});$('mapLoading').classList.add('hidden');$('mapStatus').textContent=countries.length+' pays et territoires';renderMap();renderList()}catch(e){$('mapLoading').innerHTML='<p>'+e.message+'</p><p>Connecte-toi une première fois pour télécharger la carte.</p>';$('mapStatus').textContent='Carte non chargée';console.error(e)}}
 async function searchPlace(q){const direct=findCountry(q);if(direct){await addCountry(direct,'country');return}const cached=placeCache[normalize(q)];if(cached){const f=countries.find(x=>countryCode(x)===cached.code);if(f){await addCountry(f,'cache');return}}

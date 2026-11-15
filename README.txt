@@ -1,13 +1,13 @@
 MYWORLD — PREMIÈRE VERSION PWA
 
-Ce dossier contient une première version de l'application MyWorld.
+Ce dossier contient une version 4 de l'application MyWorld.
 
 FONCTIONNALITÉS
 - Carte mondiale interactive et pays colorés en vert lorsqu'ils sont visités.
 - Ajout par nom de pays.
 - Recherche de ville ou région avec identification du pays via OpenStreetMap/Nominatim lorsque la connexion est disponible.
 - Les recherches de lieux sont mémorisées sur l'appareil pour les retrouver hors connexion.
-- Liste des pays visités, compteur et pourcentage.
+- Liste des pays et territoires visités, compteur et pourcentage.
 - Suppression, export et import d'une sauvegarde JSON.
 - Carte géographique mise en cache localement après son premier chargement.
 
@@ -26,7 +26,7 @@ Pour Android :
 3. Ouvrir MyWorld une première fois avec Internet pour mettre en cache l'application et la carte.
 
 DONNÉES ET SYNCHRONISATION
-Les pays visités sont stockés localement sur chaque appareil (IndexedDB). Il n'y a pas de compte ni de synchronisation automatique. Utiliser Exporter sur un appareil puis Importer sur l'autre pour transférer la liste.
+Les pays et territoires visités sont stockés localement sur chaque appareil (IndexedDB). Il n'y a pas de compte ni de synchronisation automatique. Utiliser Exporter sur un appareil puis Importer sur l'autre pour transférer la liste.
 
 LIMITES DE CETTE PREMIÈRE VERSION
 - La recherche d'un pays fonctionne hors connexion. La recherche de villes et régions s'appuie sur Nominatim lors de la première recherche ; les résultats choisis sont ensuite mémorisés localement. Un lieu jamais recherché ne peut pas être identifié hors connexion dans cette version.
@@ -39,3 +39,5 @@ index.html, styles.css, app.js, sw.js, manifest.webmanifest, assets/icon.svg
 
 
 V3 : amélioration de la résolution des pays lors de la recherche de villes et régions (notamment New York / États-Unis), via le code pays fourni par le géocodeur.
+
+VERSION 4 — La carte utilise les sous-unités Natural Earth pour distinguer certains territoires géographiquement séparés (notamment Alaska, Hawaï, Groenland et territoires ultramarins). Le découpage dépend de la nomenclature Natural Earth.
