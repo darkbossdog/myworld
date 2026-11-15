@@ -36,3 +36,6 @@ LIMITES DE CETTE PREMIÈRE VERSION
 
 FICHIERS
 index.html, styles.css, app.js, sw.js, manifest.webmanifest, assets/icon.svg
+
+
+V3 : amélioration de la résolution des pays lors de la recherche de villes et régions (notamment New York / États-Unis), via le code pays fourni par le géocodeur.
