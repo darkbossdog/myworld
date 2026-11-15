@@ -52,8 +52,8 @@ footer{padding-top:18px}
 
 
 /* MYWORLD V8 — contraste cartographique renforcé */
-#map{background-color:#d7e4ec!important;background-image:radial-gradient(ellipse at 50% 42%,rgba(255,255,255,.24),rgba(188,211,224,.18) 72%),linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px)!important}
-.leaflet-container{background:#d7e4ec!important}
+#map{background-color:#5b9fc4!important;background-image:radial-gradient(ellipse at 50% 42%,rgba(255,255,255,.16),rgba(34,105,151,.20) 72%),linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px)!important}
+.leaflet-container{background:#5b9fc4!important}
 .leaflet-overlay-pane path{transition:fill .18s ease,fill-opacity .18s ease,stroke .18s ease}
 .leaflet-tooltip{background:#fff!important;border:1px solid #9aabb6!important;color:#142f43!important;font-size:12px!important;font-weight:700!important}
 .map-legend span:first-child i{background:#16845b!important;box-shadow:0 0 0 2px #d5e9df}
