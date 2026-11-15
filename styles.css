@@ -98,3 +98,37 @@ footer{padding-top:18px}
 .patchwork-photo.photo-0{grid-column:span 3;grid-row:span 2}.patchwork-photo.photo-1{grid-column:span 3;grid-row:span 1}.patchwork-photo.photo-2,.patchwork-photo.photo-3,.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}
 .photo-viewer{display:none;position:fixed;inset:0;z-index:99999;background:rgba(7,16,22,.94);align-items:center;justify-content:center;padding:54px 64px}.photo-viewer.open{display:flex}.photo-viewer figure{margin:0;max-width:min(1100px,90vw);max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:10px}.photo-viewer figure img{display:block;max-width:100%;max-height:78vh;object-fit:contain;border-radius:5px}.photo-viewer figcaption{color:#fff;font:13px Arial,sans-serif;text-align:center}.photo-viewer button{position:absolute;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;cursor:pointer;width:44px;height:44px;font-size:28px;line-height:1}.photo-viewer button:disabled{opacity:.35;cursor:default}.photo-viewer .photo-close{right:18px;top:18px;font-size:32px}.photo-viewer .photo-prev{left:16px;top:50%;transform:translateY(-50%)}.photo-viewer .photo-next{right:16px;top:50%;transform:translateY(-50%)}.popup-open-gallery{margin-top:8px;padding:6px 9px;border:0;border-radius:6px;background:#e8f1ed;color:#205a45;cursor:pointer;font-size:11px}
 @media(max-width:650px){.entry-photos.patchwork-gallery{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:82px;gap:5px}.patchwork-photo.photo-0{grid-column:span 2;grid-row:span 2}.patchwork-photo.photo-1,.patchwork-photo.photo-2,.patchwork-photo.photo-3,.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}.photo-viewer{padding:55px 12px}.photo-viewer figure{max-width:96vw}.photo-viewer .photo-prev{left:7px}.photo-viewer .photo-next{right:7px}}
+
+/* MYWORLD V14 — galerie éditoriale : formats variés, carrés et portraits */
+.entry-photos.patchwork-gallery{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  grid-auto-rows:clamp(24px,5.6vw,66px);
+  grid-auto-flow:dense;
+  gap:9px;
+  align-items:stretch;
+}
+.patchwork-photo{border-radius:12px;box-shadow:0 3px 12px rgba(22,48,62,.09);background:#e8eeeb}
+.patchwork-photo img{object-fit:cover;width:100%;height:100%}
+/* Alternance de grands carrés, petits carrés, panoramiques et portraits */
+.patchwork-photo.photo-0{grid-column:span 6;grid-row:span 4;border-radius:15px}
+.patchwork-photo.photo-1{grid-column:span 3;grid-row:span 3}
+.patchwork-photo.photo-2{grid-column:span 3;grid-row:span 2}
+.patchwork-photo.photo-3{grid-column:span 4;grid-row:span 4;border-radius:15px}
+.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 2}
+@media(min-width:900px){
+ .entry-photos.patchwork-gallery{grid-auto-rows:58px;gap:10px}
+ .patchwork-photo.photo-0{grid-column:span 5;grid-row:span 4}
+ .patchwork-photo.photo-1{grid-column:span 3;grid-row:span 3}
+ .patchwork-photo.photo-2{grid-column:span 2;grid-row:span 2}
+ .patchwork-photo.photo-3{grid-column:span 4;grid-row:span 4}
+ .patchwork-photo.photo-4{grid-column:span 2;grid-row:span 2}
+}
+@media(max-width:650px){
+ .entry-photos.patchwork-gallery{grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:clamp(34px,10vw,52px);gap:6px}
+ .patchwork-photo.photo-0{grid-column:span 4;grid-row:span 4}
+ .patchwork-photo.photo-1{grid-column:span 2;grid-row:span 2}
+ .patchwork-photo.photo-2{grid-column:span 2;grid-row:span 2}
+ .patchwork-photo.photo-3{grid-column:span 3;grid-row:span 3}
+ .patchwork-photo.photo-4{grid-column:span 3;grid-row:span 2}
+}
