@@ -29,29 +29,36 @@ function findCountryFromAddress(addr){
  return null;
 }
 async function loadGeo(){
- const cached=await dbGet('geojson-v4');if(cached)return cached;
- // Natural Earth map subunits sépare les territoires géographiquement distincts
- // (ex. Alaska, Hawaï, Groenland, Guadeloupe, Martinique, etc.).
+ const cached=await dbGet('geojson-v5');if(cached)return cached;
+ // Base Natural Earth : les unités administratives contiguës d'un même État
+ // sont regroupées. Seuls les territoires éloignés explicitement listés restent séparés.
  const url='https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_map_subunits.geojson';
  const response=await fetch(url);if(!response.ok)throw new Error('Données géographiques indisponibles');
  const data=await response.json();
- const aliasesBySubunit={
-  'France':'France métropolitaine','Mainland France':'France métropolitaine','Metropolitan France':'France métropolitaine',
-  'French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Reunion':'La Réunion','Mayotte':'Mayotte',
+ const separate={
+  'Metropolitan France':'France métropolitaine','Mainland France':'France métropolitaine','France':'France métropolitaine',
+  'French Guiana':'Guyane','Guadeloupe':'Guadeloupe','Martinique':'Martinique','Reunion':'La Réunion','Réunion':'La Réunion','Mayotte':'Mayotte',
   'Alaska':'Alaska','Hawaii':'Hawaï','Hawaiʻi':'Hawaï','Puerto Rico':'Porto Rico','Guam':'Guam','American Samoa':'Samoa américaines',
   'United States Virgin Islands':'Îles Vierges américaines','Northern Mariana Islands':'Îles Mariannes du Nord',
   'Greenland':'Groenland','Faroe Islands':'Îles Féroé','Aland':'Îles Åland','Åland':'Îles Åland',
   'Aruba':'Aruba','Curacao':'Curaçao','Curaçao':'Curaçao','Bonaire, Sint Eustatius and Saba':'Caraïbes néerlandaises',
   'Bermuda':'Bermudes','Cayman Islands':'Îles Caïmans','Gibraltar':'Gibraltar','Falkland Islands':'Îles Malouines'
  };
+ const sovereignLabels={
+  'Belgium':'Belgique','France':'France métropolitaine','United States of America':'États-Unis','Denmark':'Danemark',
+  'United Kingdom':'Royaume-Uni','Netherlands':'Pays-Bas','Germany':'Allemagne','Spain':'Espagne','Italy':'Italie'
+ };
  data.features=data.features.filter(f=>f.geometry&&f.properties).map(f=>{
   const p=f.properties;const raw=p.SUBUNIT||p.NAME_EN||p.NAME||p.ADMIN||'Territoire';
-  const label=aliasesBySubunit[raw]||raw;
-  const code=p.SU_A3&&p.SU_A3!=='-99'?p.SU_A3:(p.GU_A3&&p.GU_A3!=='-99'?p.GU_A3:raw+'-'+(p.SOV_A3||p.SOVEREIGNT||''));
+  const sovereign=p.SOVEREIGNT||p.ADMIN||raw;
+  const sovereignCode=p.SOV_A3&&p.SOV_A3!=='-99'?p.SOV_A3:(p.ADM0_A3&&p.ADM0_A3!=='-99'?p.ADM0_A3:sovereign);
+  const isSeparate=Object.prototype.hasOwnProperty.call(separate,raw);
+  const label=isSeparate?separate[raw]:(sovereignLabels[sovereign]||sovereign);
+  const code=isSeparate?'TERR-'+normalize(label).replace(/[^a-z0-9]+/g,'-'):'STATE-'+sovereignCode;
   p._myworldLabel=label;p._myworldCode=code;p.name=label;
   return f;
  });
- await dbSet('geojson-v4',data);return data;
+ await dbSet('geojson-v5',data);return data;
 }
 async function loadMap(){try{if(!window.L)throw new Error('La bibliothèque cartographique n’est pas chargée. Ouvre MyWorld une première fois avec Internet.');const data=await loadGeo();countries=data.features;geoLayer=L.geoJSON(data,{pane:'countries',style:styleFeature,onEachFeature:(f,l)=>{l.on('click',()=>{const n=countryName(f);if(visited.has(countryCode(f)))setFeedback(n+' fait déjà partie de tes pays visités.',true);else addCountry(f,'map')});l.bindTooltip(countryName(f),{sticky:true})}}).addTo(map);map.fitBounds(geoLayer.getBounds(),{padding:[12,12]});$('mapLoading').classList.add('hidden');$('mapStatus').textContent=countries.length+' pays et territoires';renderMap();renderList()}catch(e){$('mapLoading').innerHTML='<p>'+e.message+'</p><p>Connecte-toi une première fois pour télécharger la carte.</p>';$('mapStatus').textContent='Carte non chargée';console.error(e)}}
 async function searchPlace(q){const direct=findCountry(q);if(direct){await addCountry(direct,'country');return}const cached=placeCache[normalize(q)];if(cached){const f=countries.find(x=>countryCode(x)===cached.code);if(f){await addCountry(f,'cache');return}}

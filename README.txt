@@ -41,3 +41,8 @@ index.html, styles.css, app.js, sw.js, manifest.webmanifest, assets/icon.svg
 V3 : amélioration de la résolution des pays lors de la recherche de villes et régions (notamment New York / États-Unis), via le code pays fourni par le géocodeur.
 
 VERSION 4 — La carte utilise les sous-unités Natural Earth pour distinguer certains territoires géographiquement séparés (notamment Alaska, Hawaï, Groenland et territoires ultramarins). Le découpage dépend de la nomenclature Natural Earth.
+
+
+VERSION 5 — REGROUPEMENT DES RÉGIONS CONTIGUËS
+Les subdivisions administratives contiguës d’un même État sont regroupées sous un seul pays (ex. Belgique). Les territoires éloignés explicitement pris en charge (ex. Martinique, Guadeloupe, Alaska, Hawaï, Groenland) restent indépendants.
+Avant la mise à jour, exporter une sauvegarde depuis l’ancienne version. Les codes géographiques changent dans cette version ; réimporter la sauvegarde ne garantit pas la reprise automatique des anciennes sélections.
