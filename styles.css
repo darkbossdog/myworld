@@ -66,3 +66,35 @@ footer{padding-top:18px}
 
 /* MYWORLD V12 — carte interactive des souvenirs */
 .trip-hero{height:clamp(170px,28vw,300px);border-radius:14px;overflow:hidden;margin:0 0 22px;background:linear-gradient(135deg,#dce9e7,#a9c7c4);display:grid;place-items:center;color:white;font-size:42px}.trip-hero img{width:100%;height:100%;object-fit:cover}.trip-hero.no-cover{height:110px}.trip-map-section{margin:24px 0 30px;padding:18px;border:1px solid #e1e8e5;border-radius:14px;background:#fbfdfc}.trip-map-heading h3{font:500 22px 'Playfair Display',Georgia;color:var(--navy);margin:5px 0}.trip-map-heading p,.map-hint{font-size:11px;color:#71858e;line-height:1.5}.trip-map{height:360px;border-radius:10px;overflow:hidden;background:#5b9fc4}.trip-map-empty{height:100%;display:grid;place-content:center;text-align:center;padding:20px;color:#657c87;font-size:12px;line-height:1.7;background:#edf4f3}.map-hint{margin-top:9px}.map-memory-popup{max-width:240px}.map-memory-popup small{display:block;color:#73838a;margin:4px 0}.map-memory-popup p{font-size:11px;line-height:1.4;max-height:70px;overflow:auto}.map-popup-photos{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}.map-popup-photo{width:100%;height:72px;object-fit:cover;border-radius:4px}.field input[type=number]{appearance:textfield}@media(max-width:650px){.trip-map-section{padding:11px}.trip-map{height:290px}.trip-hero{height:180px}}
+
+/* V13 — mosaïque photo et visualisation plein écran */
+.entry-photos.patchwork-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:105px;gap:7px;margin-top:16px;grid-auto-flow:dense}
+.patchwork-photo{position:relative;display:block;min-width:0;min-height:0;padding:0;border:0;border-radius:9px;overflow:hidden;background:#e7eeeb;cursor:zoom-in}
+.patchwork-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
+.patchwork-photo:hover img{transform:scale(1.045)}
+.patchwork-photo.photo-0{grid-column:span 3;grid-row:span 2}
+.patchwork-photo.photo-1{grid-column:span 3;grid-row:span 1}
+.patchwork-photo.photo-2{grid-column:span 2;grid-row:span 1}
+.patchwork-photo.photo-3{grid-column:span 2;grid-row:span 1}
+.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}
+.photo-viewer{display:none;position:fixed;inset:0;z-index:99999;background:rgba(7,16,22,.94);align-items:center;justify-content:center;padding:54px 64px}
+.photo-viewer.open{display:flex}
+.photo-viewer figure{margin:0;max-width:min(1100px,90vw);max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:10px}
+.photo-viewer figure img{display:block;max-width:100%;max-height:78vh;object-fit:contain;border-radius:5px}
+.photo-viewer figcaption{color:#fff;font:13px Arial,sans-serif;text-align:center}
+.photo-viewer button{position:absolute;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;cursor:pointer;width:44px;height:44px;font-size:28px;line-height:1}
+.photo-viewer button:disabled{opacity:.35;cursor:default}
+.photo-viewer .photo-close{right:18px;top:18px;font-size:32px}
+.photo-viewer .photo-prev{left:16px;top:50%;transform:translateY(-50%)}
+.photo-viewer .photo-next{right:16px;top:50%;transform:translateY(-50%)}
+.popup-open-gallery{margin-top:8px;padding:6px 9px;border:0;border-radius:6px;background:#e8f1ed;color:#205a45;cursor:pointer;font-size:11px}
+@media(max-width:650px){.entry-photos.patchwork-gallery{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:82px;gap:5px}.patchwork-photo.photo-0{grid-column:span 2;grid-row:span 2}.patchwork-photo.photo-1{grid-column:span 2;grid-row:span 1}.patchwork-photo.photo-2,.patchwork-photo.photo-3,.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}.photo-viewer{padding:55px 12px}.photo-viewer figure{max-width:96vw}.photo-viewer .photo-prev{left:7px}.photo-viewer .photo-next{right:7px}}
+
+/* V13 — mosaïque photo et visualisation plein écran */
+.entry-photos.patchwork-gallery{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:105px;gap:7px;margin-top:16px;grid-auto-flow:dense}
+.patchwork-photo{position:relative;display:block;min-width:0;min-height:0;padding:0;border:0;border-radius:9px;overflow:hidden;background:#e7eeeb;cursor:zoom-in}
+.patchwork-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
+.patchwork-photo:hover img{transform:scale(1.045)}
+.patchwork-photo.photo-0{grid-column:span 3;grid-row:span 2}.patchwork-photo.photo-1{grid-column:span 3;grid-row:span 1}.patchwork-photo.photo-2,.patchwork-photo.photo-3,.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}
+.photo-viewer{display:none;position:fixed;inset:0;z-index:99999;background:rgba(7,16,22,.94);align-items:center;justify-content:center;padding:54px 64px}.photo-viewer.open{display:flex}.photo-viewer figure{margin:0;max-width:min(1100px,90vw);max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:10px}.photo-viewer figure img{display:block;max-width:100%;max-height:78vh;object-fit:contain;border-radius:5px}.photo-viewer figcaption{color:#fff;font:13px Arial,sans-serif;text-align:center}.photo-viewer button{position:absolute;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;cursor:pointer;width:44px;height:44px;font-size:28px;line-height:1}.photo-viewer button:disabled{opacity:.35;cursor:default}.photo-viewer .photo-close{right:18px;top:18px;font-size:32px}.photo-viewer .photo-prev{left:16px;top:50%;transform:translateY(-50%)}.photo-viewer .photo-next{right:16px;top:50%;transform:translateY(-50%)}.popup-open-gallery{margin-top:8px;padding:6px 9px;border:0;border-radius:6px;background:#e8f1ed;color:#205a45;cursor:pointer;font-size:11px}
+@media(max-width:650px){.entry-photos.patchwork-gallery{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:82px;gap:5px}.patchwork-photo.photo-0{grid-column:span 2;grid-row:span 2}.patchwork-photo.photo-1,.patchwork-photo.photo-2,.patchwork-photo.photo-3,.patchwork-photo.photo-4{grid-column:span 2;grid-row:span 1}.photo-viewer{padding:55px 12px}.photo-viewer figure{max-width:96vw}.photo-viewer .photo-prev{left:7px}.photo-viewer .photo-next{right:7px}}
