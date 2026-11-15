@@ -1,0 +1,1 @@
+{"id":"./","name":"MyWorld — Mes pays visités","short_name":"MyWorld","description":"Ma carte personnelle des pays visités.","lang":"fr-FR","start_url":"./","scope":"./","display":"standalone","orientation":"any","background_color":"#f7f8f6","theme_color":"#102a43","icons":[{"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
